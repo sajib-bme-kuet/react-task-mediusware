@@ -9,13 +9,17 @@ const Problem2 = () => {
     const handleCloseA = () => setShowModalA(false)
     const handleCloseB = () => setShowModalB(false)
 
+    const [baseURL,setBaseURL] = useState("")
+
     const handleModalOpen = (id) => {
         if (id === 'A') {
             setShowModalA(true)
             setShowModalB(false)
+            setBaseURL("https://contact.mediusware.com/api/contacts/")
         } else {
             setShowModalB(true)
             setShowModalA(false)
+            setBaseURL("https://contact.mediusware.com/api/country-contacts/United%20States/")
         }
     }
     return (
@@ -35,10 +39,10 @@ const Problem2 = () => {
 
 
                 <Modal title="Modal A" handleClose={handleCloseA} show={showModalA} modalSwitcher={handleModalOpen}>
-                    <DataTable baseURL={"https://contact.mediusware.com/api/contacts/"}/>
+                    <DataTable baseURL={baseURL}/>
                 </Modal>
                 <Modal title="Modal B" handleClose={handleCloseB} show={showModalB} modalSwitcher={handleModalOpen}>
-                    
+                <DataTable baseURL={baseURL}/>
                 </Modal>
             </div>
         </div>
