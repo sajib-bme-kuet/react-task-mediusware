@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 
 
 const Problem1 = () => {
 
     const [data, setData] = useState([])
+    const [filteredData, setFilteredData] = useState([])
     const [show, setShow] = useState('all');
     const [inputFieldData, setInputFieldData] = useState({
         name: '',
@@ -42,12 +43,47 @@ const Problem1 = () => {
             status: ''
         })
         event.target.reset();
-
     }
     const handleClick = (val) => {
         setShow(val);
+        setFilteredData(handleFilter(val))
     }
 
+    const handleFilter = (filterby)=>{
+        if(filterby === 'all'){
+            let activeData = []
+            let completedData = []
+            let otherData = []
+            data.forEach((item) => {
+                switch(item.status?.toLowerCase()){
+                    case 'active':
+                        activeData.push(item)
+                        break;
+                    case 'completed':
+                        completedData.push(item)
+                        break;
+                    default:
+                        otherData.push(item)
+                        break;
+                }
+            })
+            const sortedOtherData = otherData.sort((a, b) => a.status?.toLowerCase().localeCompare(b.status.toLowerCase()))
+            const sortedData = [...activeData, ...completedData, ...sortedOtherData]
+            return sortedData
+        }
+        else if(filterby === 'active'){
+            return data.filter((item) => item.status?.toLowerCase() === 'active')
+        }
+        else if(filterby === 'completed'){
+            return data.filter((item) => item.status?.toLowerCase() === 'completed')
+        }
+    }
+
+
+    useEffect(()=>{
+        const filterResult = handleFilter(show)
+        setFilteredData(filterResult)
+    },[data])
     return (
 
         <div className="container">
@@ -94,7 +130,7 @@ const Problem1 = () => {
                         </thead>
                         <tbody>
 {
-    data.map((item, index) => {
+    filteredData.map((item, index) => {
 return (<tr key={index}>
     <td>{item?.name}</td>
     <td>{item?.status}</td>
