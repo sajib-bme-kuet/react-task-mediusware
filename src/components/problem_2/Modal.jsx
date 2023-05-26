@@ -7,7 +7,7 @@ const Modal = ({ title, show, handleClose, children, modalSwitcher }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">{title}</h5>
-            <button type="button" className="btn" onClick={handleClose}>Close</button>
+            <button type="button" className="btn bg-light btn-sm" onClick={handleClose} style={{border:"1px solid #46139f"}}>Close</button>
           </div>
           <div className="modal-body">
 
