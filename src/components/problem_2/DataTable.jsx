@@ -2,14 +2,15 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import SecondaryModal from './SecondaryModal';
 import SecondaryDataTable from './SecondaryDataTable';
-
+import InfiniteScroll from 'react-infinite-scroll-component';
 const DataTable = ({ baseURL,showOnlyEven }) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState('');
-
+  const [hasMore, setHasMore] = useState(true);
   const [data, setData] = useState([])
-
+const [nextURL,setNextURL] = useState("")
+const [totalLength,setTotalLength] = useState(0)
   const [filteredData, setFilteredData] = useState([])
 
   useEffect(()=>{
@@ -40,7 +41,13 @@ const DataTable = ({ baseURL,showOnlyEven }) => {
     }).then((response) => {
       const totalPageCount = Math.ceil(response.data.count / 15)
       setTotalPage(totalPageCount > 0 ? totalPageCount : 1)
+      setNextURL(response.data.next)
       setData(response.data.results)
+      if(response.data.next !== null){
+        setHasMore(true)
+      }else{
+        setHasMore(false)
+      }
     }).catch((error) =>
       console.error(error))
   }
@@ -55,6 +62,22 @@ const DataTable = ({ baseURL,showOnlyEven }) => {
     timer = setTimeout(()=> handleInstantDataSearch(), 300) //debounce function to limit api calls in short interval
   }
 
+  const handleLoadMore = () => {
+    console.log("Triggered")
+    if(hasMore){
+      axios.get(nextURL).then((response) => {
+        setNextURL(response.data.next)
+        setTotalLength(response.data.count)
+        setData([...data,...response.data.results])
+        if(response.data.next !== null){
+          setHasMore(true)
+        }else{
+          setHasMore(false)
+        }
+      })
+    }
+  }
+
 
   useEffect(() => {
     axios.get(baseURL, {
@@ -64,9 +87,17 @@ const DataTable = ({ baseURL,showOnlyEven }) => {
         search: searchTerm,
       }
     }).then((response) => {
+      console.log("nextURL",response.data.next)
       const totalPageCount = Math.ceil(response.data.count / 15)
       setTotalPage(totalPageCount > 0 ? totalPageCount : 1)
+      setNextURL(response.data.next)
+      setTotalLength(response.data.count)
       setData(response.data.results)
+      if(response.data.next !== null){
+        setHasMore(true)
+      }else{
+        setHasMore(false)
+      }
     }).catch((error) =>
       console.error(error))
 
@@ -89,6 +120,19 @@ const DataTable = ({ baseURL,showOnlyEven }) => {
           />
         </form>
       </div>
+      <div
+      style={{
+        height: '500px',
+        overflow: 'auto',
+      }}
+    >
+      <InfiniteScroll
+        dataLength={totalLength}
+        next={handleLoadMore}
+        hasMore={hasMore}
+        loader={<h4>Loading...</h4>}
+        endMessage={<p>No more data to load.</p>}
+      >
       <table className="table">
         <thead>
           <tr>
@@ -109,13 +153,16 @@ const DataTable = ({ baseURL,showOnlyEven }) => {
           ))}
         </tbody>
       </table>
-      <div className='d-flex justify-content-center align-items-center gap-3 my-3'>
+      </InfiniteScroll>
+    </div>
+      
+      {/* <div className='d-flex justify-content-center align-items-center gap-3 my-3'>
         <button className="btn btn-primary btn-sm" disabled={page === 1} onClick={() => setPage(page - 1)}>
           Previous
         </button>
         <span className="mx-2">Page {page} of {totalPage}</span>
         <button className="btn btn-primary btn-sm" disabled={page === totalPage} onClick={() => setPage(page + 1)}>Next</button>
-      </div>
+      </div> */}
       <SecondaryModal title={"Fewer Contacts"} show={showSecondaryModal} handleClose={handleSecondaryModalClose}>
       <SecondaryDataTable baseURL={baseURL} page={page} />
       </SecondaryModal>
