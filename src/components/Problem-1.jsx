@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 const Problem1 = () => {
 
     const [data, setData] = useState([])
-    const [filteredData, setFilteredData] = useState([])
+
     const [show, setShow] = useState('all');
     const [inputFieldData, setInputFieldData] = useState({
         name: '',
@@ -46,7 +46,6 @@ const Problem1 = () => {
     }
     const handleClick = (val) => {
         setShow(val);
-        setFilteredData(handleFilter(val))
     }
 
     const handleFilter = (filterby)=>{
@@ -80,10 +79,10 @@ const Problem1 = () => {
     }
 
 
-    useEffect(()=>{
-        const filterResult = handleFilter(show)
-        setFilteredData(filterResult)
-    },[data])
+    const filteredData = useMemo(() => {
+        return handleFilter(show)
+    },[data,show])
+
     return (
 
         <div className="container">
