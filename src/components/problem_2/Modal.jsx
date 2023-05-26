@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Modal = ({ title, show, handleClose, children, modalSwitcher }) => {
+const Modal = ({ title, show, handleClose, children, modalSwitcher,setShowOnlyEven,showOnlyEven }) => {
   return (
     <div className={`modal ${show ? 'show' : ''}`} style={{ display: show ? 'block' : 'none' }}>
       <div className="modal-dialog modal-lg">
@@ -19,7 +19,7 @@ const Modal = ({ title, show, handleClose, children, modalSwitcher }) => {
             {children}</div>
           <div className="modal-footer justify-content-start">
             <div className="form-check">
-              <input className="form-check-input" type="checkbox" id="only-even" />
+              <input className="form-check-input" type="checkbox" id="only-even" checked={showOnlyEven} onChange={(event) => setShowOnlyEven(event.target.checked)} />
               <label className="form-check-label" htmlFor="only-even">
                 Only Even
               </label>

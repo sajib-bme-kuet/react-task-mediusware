@@ -10,15 +10,18 @@ const Problem2 = () => {
     const handleCloseB = () => setShowModalB(false)
 
     const [baseURL,setBaseURL] = useState("")
+    const [showOnlyEven,setShowOnlyEven] = useState(false)
 
     const handleModalOpen = (id) => {
         if (id === 'A') {
             setShowModalA(true)
             setShowModalB(false)
+            setShowOnlyEven(false)
             setBaseURL("https://contact.mediusware.com/api/contacts/")
         } else {
             setShowModalB(true)
             setShowModalA(false)
+            setShowOnlyEven(false)
             setBaseURL("https://contact.mediusware.com/api/country-contacts/United%20States/")
         }
     }
@@ -38,11 +41,11 @@ const Problem2 = () => {
                 </div>
 
 
-                <Modal title="Modal A" handleClose={handleCloseA} show={showModalA} modalSwitcher={handleModalOpen}>
-                    <DataTable baseURL={baseURL}/>
+                <Modal title="All Contacts" handleClose={handleCloseA} show={showModalA} modalSwitcher={handleModalOpen} showOnlyEven={showOnlyEven} setShowOnlyEven={setShowOnlyEven}>
+                    <DataTable baseURL={baseURL} showOnlyEven={showOnlyEven} />
                 </Modal>
-                <Modal title="Modal B" handleClose={handleCloseB} show={showModalB} modalSwitcher={handleModalOpen}>
-                <DataTable baseURL={baseURL}/>
+                <Modal title="US Contacts" handleClose={handleCloseB} show={showModalB} modalSwitcher={handleModalOpen} showOnlyEven={showOnlyEven} setShowOnlyEven={setShowOnlyEven}>
+                <DataTable baseURL={baseURL} showOnlyEven={showOnlyEven}/>
                 </Modal>
             </div>
         </div>

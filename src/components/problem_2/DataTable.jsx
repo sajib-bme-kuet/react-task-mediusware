@@ -1,13 +1,30 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import SecondaryModal from './SecondaryModal';
+import SecondaryDataTable from './SecondaryDataTable';
 
-const DataTable = ({ baseURL }) => {
+const DataTable = ({ baseURL,showOnlyEven }) => {
   const [page, setPage] = useState(1);
   const [totalPage, setTotalPage] = useState(1)
   const [searchTerm, setSearchTerm] = useState('');
 
   const [data, setData] = useState([])
 
+  const [filteredData, setFilteredData] = useState([])
+
+  useEffect(()=>{
+
+    if(data.length > 0){
+      if(showOnlyEven){
+        setFilteredData(data.filter((item)=>item.id % 2 === 0))
+      }else{
+        setFilteredData(data)
+      }
+    }
+  },[data,showOnlyEven])
+
+  const [showSecondaryModal, setShowSecondaryModal] = useState(false);
+  const handleSecondaryModalClose = () => setShowSecondaryModal(false);
 
   const handleInstantDataSearch = (event) => {
     if(event){
@@ -82,8 +99,8 @@ const DataTable = ({ baseURL }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item) => (
-            <tr key={item.id}>
+          {filteredData.map((item) => (
+            <tr key={item.id} onClick={()=> setShowSecondaryModal(true)}>
 
               <td>{item?.phone}</td>
               <td>{item?.country?.name}</td>
@@ -99,6 +116,9 @@ const DataTable = ({ baseURL }) => {
         <span className="mx-2">Page {page} of {totalPage}</span>
         <button className="btn btn-primary btn-sm" disabled={page === totalPage} onClick={() => setPage(page + 1)}>Next</button>
       </div>
+      <SecondaryModal title={"Fewer Contacts"} show={showSecondaryModal} handleClose={handleSecondaryModalClose}>
+      <SecondaryDataTable baseURL={baseURL} page={page} />
+      </SecondaryModal>
     </div>
   );
 };
