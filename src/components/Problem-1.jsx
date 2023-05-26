@@ -93,6 +93,13 @@ const Problem1 = () => {
                             </tr>
                         </thead>
                         <tbody>
+{
+    data.map((item, index) => {
+return (<tr key={index}>
+    <td>{item?.name}</td>
+    <td>{item?.status}</td>
+</tr>)
+    })}
 
                         </tbody>
                     </table>
