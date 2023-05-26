@@ -4,13 +4,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 const Problem1 = () => {
 
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]) //state for localStorage / All data
 
-    const [show, setShow] = useState('all');
+    const [show, setShow] = useState('all'); // filter state
     const [inputFieldData, setInputFieldData] = useState({
         name: '',
         status: ''
-    })
+    }) // input field state
 
     //get LocalStorage data
     useEffect(() => {
@@ -35,7 +35,7 @@ const Problem1 = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const dataLength = data.length;
-        const newData = {...data, id: dataLength + 1, ...inputFieldData}
+        const newData = { ...data, id: dataLength + 1, ...inputFieldData }
         setData([...data, newData])
         localStorage.setItem('data', JSON.stringify([...data, newData]))
         setInputFieldData({
@@ -44,17 +44,19 @@ const Problem1 = () => {
         })
         event.target.reset();
     }
+    //handle filter state
     const handleClick = (val) => {
         setShow(val);
     }
 
-    const handleFilter = (filterby)=>{
-        if(filterby === 'all'){
+    //the actual filter function
+    const handleFilter = (filterby) => {
+        if (filterby === 'all') {
             let activeData = []
             let completedData = []
             let otherData = []
             data.forEach((item) => {
-                switch(item.status?.toLowerCase()){
+                switch (item.status?.toLowerCase()) {
                     case 'active':
                         activeData.push(item)
                         break;
@@ -70,18 +72,18 @@ const Problem1 = () => {
             const sortedData = [...activeData, ...completedData, ...sortedOtherData]
             return sortedData
         }
-        else if(filterby === 'active'){
+        else if (filterby === 'active') {
             return data.filter((item) => item.status?.toLowerCase() === 'active')
         }
-        else if(filterby === 'completed'){
+        else if (filterby === 'completed') {
             return data.filter((item) => item.status?.toLowerCase() === 'completed')
         }
     }
 
-
+    //change display data according to filter state
     const filteredData = useMemo(() => {
         return handleFilter(show)
-    },[data,show])
+    }, [data, show])
 
     return (
 
@@ -92,15 +94,15 @@ const Problem1 = () => {
                     <form className="row gy-2 gx-3 align-items-center mb-4" onSubmit={handleSubmit}>
                         <div className="col-auto">
                             <input type="text" className="form-control" placeholder="Name"
-                            name='name'
-                            value={inputFieldData.name}
-                            onChange={handleChange}
+                                name='name'
+                                value={inputFieldData.name}
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="col-auto">
                             <input type="text" className="form-control" placeholder="Status" name='status'
-                            value={inputFieldData.status}
-                            onChange={handleChange} />
+                                value={inputFieldData.status}
+                                onChange={handleChange} />
                         </div>
                         <div className="col-auto">
                             <button type="submit" className="btn btn-primary">Submit</button>
@@ -128,13 +130,13 @@ const Problem1 = () => {
                             </tr>
                         </thead>
                         <tbody>
-{
-    filteredData.map((item, index) => {
-return (<tr key={index}>
-    <td>{item?.name}</td>
-    <td>{item?.status}</td>
-</tr>)
-    })}
+                            {
+                                filteredData.map((item) => {
+                                    return (<tr key={item.id}>
+                                        <td>{item?.name}</td>
+                                        <td>{item?.status}</td>
+                                    </tr>)
+                                })}
 
                         </tbody>
                     </table>
