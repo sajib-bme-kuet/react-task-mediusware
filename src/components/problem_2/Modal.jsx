@@ -18,9 +18,9 @@ const Modal = ({ title, show, handleClose, children, modalSwitcher }) => {
 
             {children}</div>
           <div className="modal-footer justify-content-start">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="only-even" />
-              <label class="form-check-label" for="only-even">
+            <div className="form-check">
+              <input className="form-check-input" type="checkbox" id="only-even" />
+              <label className="form-check-label" htmlFor="only-even">
                 Only Even
               </label>
             </div>

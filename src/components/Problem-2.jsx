@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Modal from "./problem_2/Modal";
+import DataTable from "./problem_2/DataTable";
 
 const Problem2 = () => {
 
@@ -34,7 +35,7 @@ const Problem2 = () => {
 
 
                 <Modal title="Modal A" handleClose={handleCloseA} show={showModalA} modalSwitcher={handleModalOpen}>
-                    
+                    <DataTable baseURL={"https://contact.mediusware.com/api/contacts/"}/>
                 </Modal>
                 <Modal title="Modal B" handleClose={handleCloseB} show={showModalB} modalSwitcher={handleModalOpen}>
                     
